@@ -1,0 +1,103 @@
+# from settings import settings
+import discord
+from discord.ext import commands
+
+import random
+
+# import * - это тоже самое, что перечислить все файлы
+# from bot_logic import *
+
+# Переменная intents - хранит привилегии бота
+intents = discord.Intents.default()
+# Включаем привелегию на чтение сообщений
+intents.message_content = True
+# Создаем бота в переменной client и передаем все привелегии
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+
+def gen_pass(pass_length):
+    elements = "+-/*!&$#?=@<>"
+    password = ""
+
+    for i in range(pass_length):
+        password += random.choice(elements)
+
+    return password
+
+
+def gen_emodji():
+    emodji = ["\U0001f600", "\U0001f642", "\U0001F606", "\U0001F923"]
+    return random.choice(emodji)
+
+
+def flip_coin():
+    flip = random.randint(0, 2)
+    if flip == 0:
+        return "ОРЕЛ"
+    else:
+        return "РЕШКА"
+def calculator_2chisla(n, m, znak):
+    mnozhestvo_znakov = ['+', '-', '*', '/', '//', '**']
+    if znak in mnozhestvo_znakov:
+        answer = (n + znak + m)
+    return eval(answer)
+
+
+def ya_hochy_igry():
+    return 'Есть набор из 10 натуральных чисел от 1 до 10. Три из этих чисел являются "красными".\n Тебе необходимо выбрать 3 числа, не являющихся красными. Если выберешь "красное" число - ты проиграл.\n Для запуска игра напиши команду game1, а в аргументах укажи 3 выбранных числа.'
+def game(x,y,z):
+    chisla=[1,2,3,4,5,6,7,8,9,10]
+    red=[]
+    for i in range(3):
+        a=random.choice(chisla)
+        red.append(a)
+        chisla.remove(a)
+    if x in red or y in red or z in red:
+        return f'Вы проиграли, красными числами были {red}'
+    else:
+        return f'Вы выиграли, красными числами были {red}'
+def func1():
+    return 'Функции бота: \n $game23-объяснение правил игры \n $game1-игра \n $hello-приветствие \n $smile-рандомный смайл \n $coin-подбрасывание монет \n $password-генерация пароля(в аргументах укажите длину) \n $calculator-калькулятор, выполняющий операции с 2 числами, в аргументах укажите 1 число, 2 число, знак'
+
+# Когда бот будет готов, он напишет в консоли свое название!
+@bot.event
+async def on_ready():
+    print(f'We have logged in as {bot.user}')
+
+
+@bot.command()
+async def hello(ctx):
+    await ctx.send(f'Привет! Я бот {bot.user}!')
+
+
+@bot.command()
+async def smile(ctx):
+    await ctx.send(gen_emodji())
+
+
+@bot.command()
+async def coin(ctx):
+    await ctx.send(flip_coin())
+
+
+@bot.command("password")
+async def password(ctx, count=10):
+    await ctx.send(gen_pass(count))
+
+@bot.command()
+async def game23(ctx):
+    await ctx.send(ya_hochy_igry())
+
+@bot.command("game1")
+async def game1(ctx,x,y,z):
+    await ctx.send(game(x,y,z))
+
+@bot.command('calculator')
+async def calculator(ctx,n,m,znak):
+    await ctx.send(calculator_2chisla(n, m, znak))
+
+@bot.command()
+async def func(ctx):
+    await ctx.send(func1())
+
+bot.run('токен')
